@@ -10,7 +10,9 @@ import NotFound from './pages/NotFound';
 import ErrorPage from './pages/Error';
 import AuthLayout from './layouts/AuthLayout';
 
+
 const queryClient = new QueryClient();
+
 
 function App() {
   return (
