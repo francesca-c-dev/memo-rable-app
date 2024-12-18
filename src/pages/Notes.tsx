@@ -1,14 +1,12 @@
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useTranslation } from 'react-i18next';
 
-import { generateClient } from 'aws-amplify/api';
-import type { Schema } from "../../amplify/data/resource";
 import NotesList from '../components/NotesList';
 import CreateNote from '../components/CreateNote';
 
 
 
-const client = generateClient<Schema>();
+
 
 export default function Notes() {
   const { t } = useTranslation();
