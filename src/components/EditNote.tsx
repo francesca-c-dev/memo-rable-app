@@ -1,4 +1,3 @@
-// src/components/EditNote.tsx
 import { useState } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea } from "@nextui-org/react";
@@ -18,12 +17,14 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
     content: note.content || '',
   });
   const [image, setImage] = useState<File | null>(null);
+  const [keepExistingImage, setKeepExistingImage] = useState(true);
 
   const editMutation = useMutation({
     mutationFn: async () => {
       return notesService.updateNote(note.id, {
         ...formData,
         image: image || undefined,
+        deleteImage: !keepExistingImage && !image
       });
     },
     onSuccess: () => {
@@ -31,6 +32,14 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
       onClose();
     },
   });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setKeepExistingImage(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,23 +57,35 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
                 <Input
                   label="Title"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, title: e.target.value }))}
                 />
                 <Textarea
                   label="Content"
                   value={formData.content}
-                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, content: e.target.value }))}
                 />
-                {note.imageUrl && (
-                  <div className="mt-2">
+                {note.imageUrl && keepExistingImage && (
+                  <div className="mt-2 relative group">
                     <p className="text-small mb-2">Current Image:</p>
-                    <img src={note.imageUrl} alt="Current" className="w-32 h-32 object-cover rounded" />
+                    <div className="relative">
+                      <img src={note.imageUrl} alt="Current" className="w-32 h-32 object-cover rounded" />
+                      <Button
+                        isIconOnly
+                        color="danger"
+                        variant="flat"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onPress={() => setKeepExistingImage(false)}
+                      >
+                       Delete
+                      </Button>
+                    </div>
                   </div>
                 )}
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setImage(e.target.files?.[0] || null)}
+                  onChange={handleFileChange}
                   className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 
                            file:rounded-full file:border-0 file:text-sm file:font-semibold
                            file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"

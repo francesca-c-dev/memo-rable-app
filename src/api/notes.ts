@@ -30,11 +30,13 @@ export interface NoteWithImage extends ApiNote {
 }
 
 
+
 export interface CreateNoteInput {
-  title: string;
-  content: string;
-  image?: File;
-}
+    title: string;
+    content: string;
+    image?: File;
+    deleteImage?: boolean;  // Add this
+  }
 
 export const notesService = {
     async createNote({ title, content, image }: CreateNoteInput) {
@@ -93,15 +95,56 @@ export const notesService = {
     return deleteResult.data;
   },
 
+
   async updateNote(id: string, data: Partial<CreateNoteInput>) {
     const result = await client.models.Note.get({ id });
     if (!result.data) throw new Error('Note not found');
-
+  
     let imagePath = result.data.imageKey;
-
+  
+    // If there's a new image, upload it regardless of deleteImage flag
     if (data.image) {
       const user = await getCurrentUser();
-      imagePath = `notes/${user.userId}/${Date.now()}-${data.image.name}`;
+      imagePath = `notes/${user.userId}-${Date.now()}-${data.image.name}`;
+      await uploadData({
+        path: imagePath,
+        data: data.image,
+        options: {
+          contentType: data.image.type
+        }
+      }).result;
+    } 
+    // If deleteImage is true and no new image, remove the image reference
+    else if (data.deleteImage) {
+      imagePath = null;
+    }
+  
+    const updateResult = await client.models.Note.update({
+      id,
+      title: data.title,
+      content: data.content,
+      imageKey: imagePath
+    });
+  
+    return updateResult.data;
+  }
+ 
+  
+  // Update the updateNote method
+  /*async updateNote(id: string, data: Partial<CreateNoteInput>) {
+
+    const result = await client.models.Note.get({ id });
+    if (!result.data) throw new Error('Note not found');
+  
+    let imagePath = result.data.imageKey;
+  
+    if (data.deleteImage) {
+      // If deleteImage is true, remove the image reference
+      imagePath = null;
+    } else if (data.image) {
+      // If there's a new image, upload it
+      const user = await getCurrentUser();
+      imagePath = `notes/${user.userId}-${Date.now()}-${data.image.name}`;
       await uploadData({
         path: imagePath,
         data: data.image,
@@ -110,14 +153,14 @@ export const notesService = {
         }
       }).result;
     }
-
+  
     const updateResult = await client.models.Note.update({
       id,
       title: data.title,
       content: data.content,
       imageKey: imagePath
     });
-
+  
     return updateResult.data;
-  }
-};
+  }*/
+}
