@@ -6,8 +6,8 @@ const schema = a.schema({
       title: a.string(),
       content: a.string(),
       imageKey: a.string(),
-      createdAt: a.datetime(),
-      updatedAt: a.datetime()
+ 
+   
     })
     .authorization((allow) => [allow.owner()])
 });
