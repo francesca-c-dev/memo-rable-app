@@ -11,11 +11,10 @@ import { Amplify } from 'aws-amplify';
 
 
 
-Amplify.configure(outputs);
+//Amplify.configure(outputs);
 
-const existingConfig = Amplify.getConfig();
 Amplify.configure({
-  ...existingConfig,
+  ...outputs,
   API: {
     REST: outputs.custom.API,
   },

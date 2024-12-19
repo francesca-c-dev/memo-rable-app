@@ -1,16 +1,23 @@
-
-
 import type { APIGatewayProxyHandler } from "aws-lambda";
+import { DynamoDB } from 'aws-sdk';
 
-import type { Schema } from '../../data/resource';
-import { generateClient } from "aws-amplify/api";
-
-const client = generateClient<Schema>();
+const dynamodb = new DynamoDB.DocumentClient();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const notesResult = await client.models.Note.list();
-    const notes = notesResult.data;
+    // Get authenticated user ID from the event
+    const userId = event.requestContext.authorizer?.claims?.sub;
+    
+    // Query DynamoDB for user's notes
+    const result = await dynamodb.scan({
+      TableName: process.env.NOTES_TABLE_NAME!, // We'll need to pass this from the function definition
+      FilterExpression: 'owner = :owner',
+      ExpressionAttributeValues: {
+        ':owner': userId
+      }
+    }).promise();
+
+    const notes = result.Items || [];
 
     const statistics = {
       totalNotes: notes.length,
@@ -24,26 +31,23 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*"
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify(statistics)
     };
   } catch (error) {
+    console.error('Error:', error);
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*"
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify({ error: 'Error calculating statistics' })
     };
   }
 };
-
-// Helper functions here...
-
-// Helper functions remain the same...
 
 function countTotalWords(notes: any[]) {
   return notes.reduce((total, note) => {

@@ -14,6 +14,7 @@
     "@nextui-org/react": "^2.6.8",
     "@tanstack/react-query": "^5.62.8",
     "aws-amplify": "^6.10.3",
+    "aws-sdk": "^2.1692.0",
     "framer-motion": "^11.15.0",
     "i18next": "^24.1.2",
     "react": "^18.3.1",
