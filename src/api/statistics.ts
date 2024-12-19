@@ -1,3 +1,4 @@
+import { Amplify } from 'aws-amplify';
 import { get } from 'aws-amplify/api';
 
 export interface Statistics {
@@ -10,21 +11,31 @@ export interface Statistics {
 }
 
 export const getStatistics = async (): Promise<Statistics> => {
-  try {
-    const operation = await get({
-      apiName: 'statisticsApi',
-      path: '/statistics'
-    });
-    
-    const response = await operation.response;
-    if (typeof response.body !== 'string') {
-      throw new Error('Unexpected response format');
+    try {
+      console.log('Making API request to:', {
+        apiName: 'statisticsApi',
+        path: '/statistics'
+      });
+  
+      const config = Amplify.getConfig();
+      console.log('Current Amplify config:', config);
+  
+      const operation = await get({
+        apiName: 'statisticsApi',
+        path: '/statistics'
+      });
+      
+      const response = await operation.response;
+      console.log('API Response:', response);
+  
+      if (typeof response.body !== 'string') {
+        throw new Error('Unexpected response format');
+      }
+      
+      const data = JSON.parse(response.body) as Statistics;
+      return data;
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      throw error;
     }
-    
-    const data = JSON.parse(response.body) as Statistics;
-    return data;
-  } catch (error) {
-    console.error('Error fetching statistics:', error);
-    throw error;
-  }
-};
+  };

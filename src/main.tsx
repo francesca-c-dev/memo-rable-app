@@ -13,12 +13,26 @@ import { Amplify } from 'aws-amplify';
 
 //Amplify.configure(outputs);
 
+console.log("full outputs", outputs)
+
+Amplify.configure(outputs)
+const existingConfig = Amplify.getConfig();
+
 Amplify.configure({
-  ...outputs,
+  ...existingConfig,
   API: {
-    REST: outputs.custom.API,
-  },
+    ...existingConfig.API,
+    REST: {
+      statisticsApi: {
+        endpoint: outputs.custom.API.statisticsApi.endpoint,
+        region: outputs.custom.API.statisticsApi.region
+      }
+    }
+  }
 });
+
+
+console.log('Amplify Config after setup:', Amplify.getConfig())
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
