@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="#f7a063"/>
+  
+  <!-- Stylized brain/M combination -->
+  <path 
+    d="
+      M30 65
+      C30 45, 40 35, 50 35
+      C60 35, 70 45, 70 65
+      L70 35
+      C70 30, 65 25, 60 25
+      L40 25
+      C35 25, 30 30, 30 35
+      Z
+    "
+    fill="#f7a063"
+    stroke="#C2410C"
+    stroke-width="2"
+  />
+  
+  <!-- Memory dots/synapses -->
+  <circle cx="40" cy="45" r="3" fill="#C2410C"/>
+  <circle cx="60" cy="45" r="3" fill="#C2410C"/>
+  <circle cx="50" cy="55" r="3" fill="#C2410C"/>
+  
+  <!-- Note lines -->
+  <line x1="35" y1="75" x2="65" y2="75" stroke="#C2410C" stroke-width="3"/>
+  <line x1="40" y1="82" x2="60" y2="82" stroke="#C2410C" stroke-width="3"/>
+</svg>

@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { statisticsFunction } from '../functions/statistics/resource';
 
 const schema = a.schema({
   Note: a
@@ -9,8 +10,10 @@ const schema = a.schema({
  
    
     })
-    .authorization((allow) => [allow.owner()])
-});
+    .authorization((allow) => [allow.owner()]),
+  
+})
+
 
 export type Schema = ClientSchema<typeof schema>;
 
