@@ -1,5 +1,6 @@
-import { Amplify } from 'aws-amplify';
+
 import { get } from 'aws-amplify/api';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 export interface Statistics {
   totalNotes: number;
@@ -12,30 +13,43 @@ export interface Statistics {
 
 export const getStatistics = async (): Promise<Statistics> => {
     try {
-      console.log('Making API request to:', {
-        apiName: 'statisticsApi',
-        path: '/statistics'
-      });
-  
-      const config = Amplify.getConfig();
-      console.log('Current Amplify config:', config);
-  
-      const operation = await get({
-        apiName: 'statisticsApi',
-        path: '/statistics'
-      });
-      
-      const response = await operation.response;
-      console.log('API Response:', response);
-  
-      if (typeof response.body !== 'string') {
-        throw new Error('Unexpected response format');
+        const { tokens } = await fetchAuthSession();
+        console.log('Auth tokens obtained:', !!tokens);
+        
+        console.log('Making API request...');
+        const operation = await get({
+          apiName: 'statisticsApi',
+          path: '/statistics',
+          options: {
+            headers: {
+              Authorization: `Bearer ${tokens?.idToken?.toString()}`
+            }
+          }
+        });
+        
+        console.log('Got operation response');
+        const response = await operation.response;
+        console.log('Response status:', response.statusCode);
+    
+        // Handle ReadableStream
+        if (response.body instanceof ReadableStream) {
+          const reader = response.body.getReader();
+          const textDecoder = new TextDecoder();
+          let result = '';
+    
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            result += textDecoder.decode(value);
+          }
+    
+          const data = JSON.parse(result) as Statistics;
+          return data;
+        } else {
+          throw new Error('Unexpected response format');
+        }
+      } catch (error) {
+        console.error('Error fetching statistics:', error);
+        throw error;
       }
-      
-      const data = JSON.parse(response.body) as Statistics;
-      return data;
-    } catch (error) {
-      console.error('Error fetching statistics:', error);
-      throw error;
-    }
-  };
+    };
