@@ -26,7 +26,7 @@ export default function Notes() {
       </div>
       <NotesList />
     
-      <button onClick={()=>signOut()}>sign out</button>
+      <button onClick={()=>signOut()}>{t("login.logout")}</button>
     </div>
   );
 }

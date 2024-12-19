@@ -1,5 +1,5 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
-import { statisticsFunction } from '../functions/statistics/resource';
+
 
 const schema = a.schema({
   Note: a
