@@ -2,49 +2,94 @@ import type { APIGatewayProxyHandler } from "aws-lambda";
 import { DynamoDB } from 'aws-sdk';
 
 const dynamodb = new DynamoDB.DocumentClient();
+const ddb = new DynamoDB();
+
+
+const TABLE_NAME = 'Note';
+
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  console.log('Lambda function started');
+  console.log('Event:', JSON.stringify(event, null, 2));
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'GET,OPTIONS',
+    'Content-Type': 'application/json'
+  };
+
   try {
-    // Get authenticated user ID from the event
     const userId = event.requestContext.authorizer?.claims?.sub;
-    
-    // Query DynamoDB for user's notes
-    const result = await dynamodb.scan({
-      TableName: process.env.NOTES_TABLE_NAME!, // We'll need to pass this from the function definition
-      FilterExpression: 'owner = :owner',
-      ExpressionAttributeValues: {
-        ':owner': userId
+/*
+    // Just list tables first
+    const tableName = process.env.API_MEMORABLE_NOTETABLE_NAME;
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        debug: {
+          userId,
+          timestamp: new Date().toISOString(),
+          tables: tableName
+        }
+      })
+    };
+
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        message: "Error in Lambda function",
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorType: error instanceof Error ? error.name : 'UnknownError',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      })
+    };
+  }*/
+
+
+    const mockStatistics = {
+      totalNotes: 5,
+      notesWithImages: 2,
+      wordCount: 100,
+      topWords: [
+        { word: "test", count: 5 },
+        { word: "example", count: 3 }
+      ],
+      creationTimeline: [
+        { date: "2024-01-01", count: 2 },
+        { date: "2024-01-02", count: 3 }
+      ],
+      averageNoteLength: 50,
+      debug: {
+        userId,
+        timestamp: new Date().toISOString(),
+        dynamoDBClientInitialized: !!dynamodb,
+        eventInfo: {
+          requestContext: event.requestContext,
+          headers: event.headers
+        }
       }
-    }).promise();
-
-    const notes = result.Items || [];
-
-    const statistics = {
-      totalNotes: notes.length,
-      notesWithImages: notes.filter(note => note.imageKey).length,
-      wordCount: countTotalWords(notes),
-      topWords: findTopWords(notes),
-      creationTimeline: createTimeline(notes),
-      averageNoteLength: calculateAverageLength(notes)
     };
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: JSON.stringify(statistics)
+      headers,
+      body: JSON.stringify(mockStatistics)
     };
+
   } catch (error) {
-    console.error('Error:', error);
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: JSON.stringify({ error: 'Error calculating statistics' })
+      headers,
+      body: JSON.stringify({
+        message: "Error in Lambda function",
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorType: error instanceof Error ? error.name : 'UnknownError',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      })
     };
   }
 };
@@ -59,10 +104,10 @@ function countTotalWords(notes: any[]) {
 
 function findTopWords(notes: any[]) {
   const wordCount: Record<string, number> = {};
-  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to']);
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with']);
 
   notes.forEach(note => {
-    const words = `${note.title} ${note.content}`.toLowerCase()
+    const words = `${note.title || ''} ${note.content || ''}`.toLowerCase()
       .split(/\s+/)
       .filter(word => !stopWords.has(word) && word.length > 2);
 
@@ -94,7 +139,7 @@ function calculateAverageLength(notes: any[]) {
   if (notes.length === 0) return 0;
   
   const totalLength = notes.reduce((sum, note) => {
-    return sum + (note.content?.length || 0);
+    return sum + ((note.content?.length || 0) + (note.title?.length || 0));
   }, 0);
   
   return Math.round(totalLength / notes.length);

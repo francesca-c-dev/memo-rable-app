@@ -1,7 +1,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+
   text-align: center;
 }
 
@@ -39,4 +39,45 @@
 
 .read-the-docs {
   color: #888;
+}
+
+[data-amplify-router]{
+ 
+  border-color: #c44217 !important;
+
+}
+
+.amplify-tabs__item--active{
+  color: #c44217 !important;
+  border-color: #c44217 !important;
+}
+
+.amplify-tabs{
+  background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1)) !important
+}
+
+.amplify-tabs__list{
+  background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1)) !important
+}
+
+.amplify-tabs__panel{
+  background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1)) !important
+}
+
+.amplify-button--primary {
+  
+  background-color: #c44217 !important;
+}
+
+.amplify-button--small{
+  color:#c44217 !important;
+}
+
+.amplify-button--link:hover {
+border-color:#c44217 !important;
+background-color:transparent
+}
+
+.amplify-tabs__item:hover{
+  color: rgb(194 65 12 / var(--tw-bg-opacity, 1));
 }

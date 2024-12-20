@@ -1,9 +1,14 @@
 export default {
     auth: {
       signIn: 'Sign In',
+      signInTitle: "Sign into your account",
+      signUpTitle: "Create a new account",
       signOut: 'Sign Out',
       email: 'Email',
       password: 'Password',
+      "welcome": "Welcome to MEMOrable!",
+    "forgotPassword": "Forgot Password?",
+    "createAccount": "Create Account"
     },
     notes: {
       title: 'My Notes',

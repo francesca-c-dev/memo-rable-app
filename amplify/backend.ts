@@ -12,7 +12,7 @@ import {
   LambdaIntegration,
   RestApi,
 } from "aws-cdk-lib/aws-apigateway";
-import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { Policy, PolicyStatement, Effect } from "aws-cdk-lib/aws-iam";
 
 
 const backend = defineBackend({
@@ -22,8 +22,33 @@ const backend = defineBackend({
   statisticsFunction,
 });
 
+backend.statisticsFunction.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: [
+      'dynamodb:GetItem',
+      'dynamodb:Query',
+      'dynamodb:Scan'
+    ],
+    // Allow access to all tables for now
+    resources: ['*']
+  })
+);
+
+
+
 // Create API stack
 const apiStack = backend.createStack("api-stack");
+
+
+// Add DynamoDB permissions to the Lambda function
+backend.statisticsFunction.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['dynamodb:Scan'],
+    resources: ['*'] // In production, restrict this to your specific table
+  })
+);
 
 // Create REST API
 const statisticsApi = new RestApi(apiStack, "StatisticsApi", {
@@ -32,11 +57,12 @@ const statisticsApi = new RestApi(apiStack, "StatisticsApi", {
   deployOptions: {
     stageName: "dev",
   },
-  defaultCorsPreflightOptions: {
-    allowOrigins: Cors.ALL_ORIGINS,
-    allowMethods: Cors.ALL_METHODS,
-    allowHeaders: Cors.DEFAULT_HEADERS,
-  },
+  defaultCorsPreflightOptions:  {
+    allowOrigins: ['*'], // In production, you should specify exact origins
+    allowMethods: ['GET', 'OPTIONS'],
+    allowHeaders: ['*'],
+    allowCredentials: true
+  }
 });
 
 // Create Lambda integration
@@ -65,6 +91,7 @@ const apiPolicy = new Policy(apiStack, "StatisticsApiPolicy", {
 
 // Attach policy to authenticated role
 backend.auth.resources.authenticatedUserIamRole.attachInlinePolicy(apiPolicy);
+
 
 // Add outputs
 backend.addOutput({

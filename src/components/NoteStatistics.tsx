@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { getStatistics } from '../api/statistics';
+import { useEffect } from 'react';
 
 interface Statistics {
   totalNotes: number;
@@ -15,6 +16,10 @@ export default function NoteStatistics() {
       queryKey: ['statistics'],
       queryFn: getStatistics
     });
+
+    useEffect(() => {
+        console.log(statistics)
+      }, [statistics]);
 
   if (isLoading) {
     return (
@@ -69,7 +74,7 @@ export default function NoteStatistics() {
         <div className="mt-6">
           <p className="text-sm text-default-500 mb-2">Most Used Words</p>
           <div className="flex gap-2 flex-wrap">
-            {statistics.topWords.map(({ word, count }) => (
+            {statistics?.topWords?.map(({ word, count }) => (
               <span 
                 key={word} 
                 className="px-3 py-1 bg-primary-100 text-primary rounded-full text-sm"

@@ -4,6 +4,10 @@ export default {
       signOut: 'Esci',
       email: 'Email',
       password: 'Password',
+      "welcome": "Benvenuto in MEMOrable!",
+    "forgotPassword": "Password dimenticata?",
+    "createAccount": "Crea Account",
+    signUpTitle: "Crea un nuovo account",
     },
     notes: {
       title: 'Le Mie Note',
