@@ -86,6 +86,9 @@ export default function PDFPreview({ note, isOpen, onClose }: PDFPreviewProps) {
     }
   };
 
+
+
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl" scrollBehavior="inside">
       <ModalContent>
@@ -106,7 +109,8 @@ export default function PDFPreview({ note, isOpen, onClose }: PDFPreviewProps) {
                   <img 
                     src={note.imageUrl} 
                     alt={note.title || ""}
-                    className="max-w-full rounded-lg shadow-lg"
+               
+                     className="max-w-full rounded-lg shadow-lg preview-image"
                   />
                 </div>
               )}
