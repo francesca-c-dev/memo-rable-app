@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea } from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+} from '@nextui-org/react';
 import { useTranslation } from 'react-i18next';
 import { notesService, type CreateNoteInput } from '../api/notes';
+import { useDropzone } from 'react-dropzone';
 
 interface CreateNoteProps {
   isOpen: boolean;
@@ -17,18 +27,38 @@ export default function CreateNote({ isOpen, onClose }: CreateNoteProps) {
     content: '',
   });
   const [image, setImage] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const createMutation = useMutation({
     mutationFn: async () => {
       return notesService.createNote({
         ...formData,
-        image: image || undefined
+        image: image || undefined,
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       handleClose();
     },
+  });
+
+  const onDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles.length) {
+      const file = acceptedFiles[0];
+      if (file.type === 'image/svg+xml') {
+        setError('SVG files are not allowed.');
+        return;
+      }
+      setImage(file);
+      setError(null);
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    multiple: false,
   });
 
   const handleClose = () => {
@@ -39,8 +69,15 @@ export default function CreateNote({ isOpen, onClose }: CreateNoteProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid) return;
     createMutation.mutate();
   };
+
+  useEffect(() => {
+    // Validate the form
+    const isValid = formData.title.trim() !== '' && formData.content.trim() !== '';
+    setIsFormValid(isValid);
+  }, [formData]);
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
@@ -52,32 +89,41 @@ export default function CreateNote({ isOpen, onClose }: CreateNoteProps) {
               <Input
                 label={t('notes.titleLabel')}
                 value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({ ...prev, title: e.target.value }))
+                }
                 isRequired
               />
               <Textarea
                 label={t('notes.contentLabel')}
                 value={formData.content}
-                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({ ...prev, content: e.target.value }))
+                }
                 isRequired
               />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files?.[0] || null)}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 
-                         file:rounded-full file:border-0 file:text-sm file:font-semibold
-                         file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-              />
+              <div
+                {...getRootProps()}
+                className="border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-500"
+              >
+                <input {...getInputProps()} />
+                {image ? (
+                  <p className="text-sm text-gray-700">{image.name}</p>
+                ) : (
+                  <p className="text-sm text-gray-500">Drag and drop an image here, or click to select</p>
+                )}
+              </div>
+              {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="light" onPress={handleClose}>
               {t('common.cancel')}
             </Button>
-            <Button 
-              color="primary" 
+            <Button
+              color="primary"
               type="submit"
+              isDisabled={!isFormValid}
               isLoading={createMutation.isPending}
             >
               {t('common.create')}

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import NotesList from '../components/NotesList';
 import CreateNote from '../components/CreateNote';
@@ -7,7 +6,7 @@ import NoteStatistics from '../components/NoteStatistics';
 
 export default function Notes() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { t } = useTranslation();
+
 
   return (
     <div className="min-h-screen bg-background">
