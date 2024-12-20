@@ -9,6 +9,7 @@ import Notes from './pages/Notes';
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/Error';
 import AuthLayout from './layouts/AuthLayout';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 
 const queryClient = new QueryClient();
@@ -18,6 +19,7 @@ function App() {
   return (
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
+      <NextThemesProvider attribute="class" defaultTheme="system">
         <NextUIProvider>
           <Authenticator.Provider>
             <BrowserRouter>
@@ -41,6 +43,7 @@ function App() {
             </BrowserRouter>
           </Authenticator.Provider>
         </NextUIProvider>
+        </NextThemesProvider >
       </QueryClientProvider>
     </I18nextProvider>
   );

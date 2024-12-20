@@ -17,6 +17,10 @@ export default {
       delete: 'Delete Note',
       placeholder: 'Write your note here...',
       noNotes: 'No notes yet',
+      pdfPreview: 'PDF Preview',
+      downloadPdf: 'Download PDF',
+      generating: 'Generating PDF...',
+      created: 'Created'
     },
     common: {
       loading: 'Loading...',
