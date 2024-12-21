@@ -50,13 +50,7 @@ export default function Login() {
     
 
     
-      {/* Apply custom styles via Tailwind or CSS overrides */}
-      <style>{`
-        :root {
-          --amplify-primary-color: #00695c; /* Dark green */
-          --amplify-primary-tint: #e0f7fa; /* Light blue */
-        }
-      `}</style>
+   
     </div>
   );
 }
