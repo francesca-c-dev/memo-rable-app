@@ -123,14 +123,14 @@ export default function PDFPreview({ note, isOpen, onClose }: PDFPreviewProps) {
         </ModalBody>
         <ModalFooter>
           <Button
-            color="danger"
+           className='text-[#e32f22] !bg-transparent hover:!bg-[#e32f22] hover:text-white hover:!border-transparent" variant="light'
             variant="light"
             onPress={onClose}
           >
             Close
           </Button>
           <Button
-            color="primary"
+              className="!bg-primary-600 !text-white hover:!bg-primary-400" 
             onPress={generatePDF}
             startContent={<Download className="w-4 h-4" />}
             isLoading={isGenerating}

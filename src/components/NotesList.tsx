@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, CardHeader, CardBody, Button, ButtonGroup, Input, Image } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, Button, ButtonGroup, Input, Image, Spinner } from "@nextui-org/react";
 import { List, Grid2X2, Search, Edit, Trash2, Download } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { notesService, type NoteWithImage } from '../api/notes';
 import EditNote from './EditNote';
 import PDFPreview from './PDFPreview';
+
+
+
 
 export default function NotesList() {
     const { t } = useTranslation();
@@ -46,11 +49,21 @@ export default function NotesList() {
         .filter(note => new Date(note.createdAt) <= oneDayAgo)
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    if (isLoading) return <div>Loading notes...</div>;
+    if (isLoading) return  <div className="flex flex-col items-center justify-center min-h-[200px] p-8">
+    <Spinner 
+      size="lg" 
+      color="primary"
+      className="mb-4"
+    />
+    <p className="text-primary-600 dark:text-primary-400">
+      {t('common.loading')}
+    </p>
+  </div>
 
     const NotesSection = ({ title, notes }: { title: string, notes: NoteWithImage[] }) => (
         <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">{title}</h2>
+            <h2 className="text-xl font-semibold mb-4 dark:text-primary-500">{title}</h2>
+            
             <div className={viewMode === 'grid' 
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                 : "space-y-4"}>
@@ -67,7 +80,7 @@ export default function NotesList() {
                                 <ButtonGroup>
                                     <Button 
                                         isIconOnly 
-                                        color="secondary" 
+                                        className='!text-primary-500'
                                         variant="light" 
                                         onPress={() => setPdfPreviewNote(note)}
                                     >
@@ -83,7 +96,7 @@ export default function NotesList() {
                                     </Button>
                                     <Button 
                                         isIconOnly 
-                                        color="danger" 
+                                className='!text-[#e32f22]'
                                         variant="light" 
                                         onPress={() => deleteMutation.mutate(note.id)}
                                         isLoading={deleteMutation.isPending}
@@ -124,7 +137,7 @@ export default function NotesList() {
                             <ButtonGroup>
                                 <Button 
                                     isIconOnly 
-                                    color="secondary" 
+                                    className='!text-primary-500'
                                     variant="light" 
                                     onPress={() => setPdfPreviewNote(note)}
                                 >
@@ -140,7 +153,7 @@ export default function NotesList() {
                                 </Button>
                                 <Button 
                                     isIconOnly 
-                                    color="danger" 
+                                   className='!text-[#e32f22]'
                                     variant="light" 
                                     onPress={() => deleteMutation.mutate(note.id)}
                                 >
@@ -156,6 +169,7 @@ export default function NotesList() {
 
     return (
         <div>
+          
             <div className="flex justify-between items-center mb-6">
                 <Input
                     placeholder={t('notes.search')}

@@ -9,9 +9,12 @@ import {
   Button,
   Input,
   Textarea,
+  Tooltip
 } from '@nextui-org/react';
 import { NoteWithImage, CreateNoteInput, notesService } from '../api/notes';
 import { useDropzone } from 'react-dropzone';
+import { useTranslation } from 'react-i18next';
+import { Trash2, InfoIcon } from 'lucide-react';
 
 interface EditNoteProps {
   note: NoteWithImage;
@@ -20,6 +23,7 @@ interface EditNoteProps {
 }
 
 export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<CreateNoteInput>({
     title: note.title || '',
@@ -48,7 +52,7 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
     if (acceptedFiles.length) {
       const file = acceptedFiles[0];
       if (file.type === 'image/svg+xml') {
-        setError('SVG files are not allowed.');
+        setError(t('notes.svgNotAllowed'));
         return;
       }
       setImage(file);
@@ -70,48 +74,69 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
   };
 
   useEffect(() => {
-    // Validate the form
     const isValid = formData.title.trim() !== '' && formData.content.trim() !== '';
     setIsFormValid(isValid);
   }, [formData]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      size="2xl" 
+      classNames={{
+        base: "bg-white dark:bg-gray-900 border-2 border-primary-500",
+        header: "border-b border-primary-200 dark:border-primary-500 dark:text-primary-500",
+        body: "py-6",
+        footer: "border-t border-primary-200 dark:border-primary-700",
+      }}
+    >
       <ModalContent>
         <form onSubmit={handleSubmit}>
-          <ModalHeader>Edit Note</ModalHeader>
+          <ModalHeader>{t('notes.edit')}</ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
-                label="Title"
+                label={t('notes.titleLabel')}
                 value={formData.title}
                 onChange={(e) => setFormData((prev: any) => ({ ...prev, title: e.target.value }))}
                 isRequired
               />
               <Textarea
-                label="Content"
+                label={t('notes.contentLabel')}
                 value={formData.content}
                 onChange={(e) => setFormData((prev: any) => ({ ...prev, content: e.target.value }))}
                 isRequired
               />
               {note.imageUrl && keepExistingImage && (
                 <div className="mt-2 relative group">
-                  <p className="text-small mb-2">Current Image:</p>
+                  <p className="text-small mb-2">{t('notes.currentImage')}:</p>
                   <div className="relative">
-                    <img src={note.imageUrl} alt="Current" className="w-32 h-32 object-cover rounded" />
+                    <img 
+                      src={note.imageUrl} 
+                      alt={t('notes.currentImage')} 
+                      className="w-32 h-32 object-cover rounded" 
+                    />
                     <Button
                       isIconOnly
-                      color="danger"
                       variant="flat"
                       size="sm"
-                      className="absolute top-2 right-2"
+                      className="absolute top-2 right-2 !text-[#e32f22]"
                       onPress={() => setKeepExistingImage(false)}
                     >
-                      Delete
+                      <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>
               )}
+              <div className="flex items-center gap-2">
+                <Tooltip 
+                  content={t("notes.svgNotAllowed")}
+                  className="bg-primary-600 text-white"
+                >
+                  <InfoIcon className="w-4 h-4 text-primary-600 cursor-help" />
+                </Tooltip>
+             
+              </div>
               <div
                 {...getRootProps()}
                 className="border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-500"
@@ -120,23 +145,28 @@ export default function EditNote({ note, isOpen, onClose }: EditNoteProps) {
                 {image ? (
                   <p className="text-sm text-gray-700">{image.name}</p>
                 ) : (
-                  <p className="text-sm text-gray-500">Drag and drop an image here, or click to select</p>
+                  <p className="text-sm text-gray-500">{t('notes.dragDropImage')}</p>
                 )}
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onPress={onClose}>
-              Cancel
+            <Button 
+              className='text-[#e32f22] !bg-transparent hover:!bg-[#e32f22] hover:!text-white' 
+              variant="light" 
+              onPress={onClose}
+            >
+              {t('common.cancel')}
             </Button>
             <Button
-              color="primary"
+              className="!bg-primary-600 !text-white hover:!bg-primary-400" 
+              variant="light"
               type="submit"
               isDisabled={!isFormValid}
               isLoading={editMutation.isPending}
             >
-              Save Changes
+              {t('common.saveChanges')}
             </Button>
           </ModalFooter>
         </form>

@@ -9,22 +9,47 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          50: '#fef2ed',
+          100: '#fde6db',
+          200: '#fbc7b0',
+          300: '#f9a068', // Your secondary color
+          400: '#f67d3d',
+          500: '#f15a11',
+          600: '#c44217', // Your primary color
+          700: '#a13512',
+          800: '#7f2a0e',
+          900: '#5c1f0a',
+        }
+      },
+      fontFamily: {
+        cursive: ['Playfair Display', 'serif'],
+        handwritten: ['"Homemade Apple"', 'serif'], 
+        logo: ['"Barriecito"', 'serif'],
+        fancy: [ "Ephesis", 'serif']
+      }
+    },
   },
   plugins: [nextui({
     themes: {
       light: {
         colors: {
-          background: "#FFFFFF",
-          // Add more custom colors if needed
-        }
+          primary: {
+            DEFAULT: "#c44217",
+          },
+          focus: "#f9a068",
+        },
       },
       dark: {
         colors: {
-          background: "#000000",
-          // Add more custom colors if needed
-        }
-      }
+          primary: {
+            DEFAULT: "#f9a068",
+          },
+          focus: "#c44217",
+        },
+      },
     }
   })]
 }
