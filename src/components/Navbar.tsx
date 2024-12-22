@@ -43,11 +43,17 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
     >
       {/* Always visible content */}
       <NavbarContent className="sm:hidden" justify="start">
-        <h1 className="text-xl font-bold text-white">{t('notes.title')}</h1>
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
+        <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
+      </NavbarContent>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex" justify="start">
-        <h1 className="text-xl font-bold text-white">{t('notes.title')}</h1>
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
+        <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
+      </NavbarContent>
       </NavbarContent>
 
 
