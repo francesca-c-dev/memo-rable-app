@@ -45,14 +45,14 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
       <NavbarContent className="sm:hidden" justify="start">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
-        <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
+        <p className="text-white font-bold font-logo text-md">{"MEMOrable"}</p>
       </NavbarContent>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex" justify="start">
   <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
     <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
-    <p className="text-white font-bold font-logo text-xl">{"MEMOrable"}</p>
+    <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
   </NavbarContent>
 </NavbarContent>
 
