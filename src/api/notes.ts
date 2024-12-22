@@ -13,7 +13,7 @@ export interface CreateNoteInput {
 
 export type Nullable<T> = T | null;
 
-// Base type matching what the API returns
+
 export interface ApiNote {
   id: string;
   title: Nullable<string>;
@@ -85,11 +85,6 @@ export const notesService = {
     },
 
   async deleteNote(id: string) {
-    const result = await client.models.Note.get({ id });
-    
-    if (result.data?.imageKey) {
-      // Note: implement delete when available
-    }
 
     const deleteResult = await client.models.Note.delete({ id });
     return deleteResult.data;
@@ -102,7 +97,7 @@ export const notesService = {
   
     let imagePath = result.data.imageKey;
   
-    // If there's a new image, upload it regardless of deleteImage flag
+   
     if (data.image) {
       const user = await getCurrentUser();
       imagePath = `notes/${user.userId}-${Date.now()}-${data.image.name}`;
@@ -129,38 +124,5 @@ export const notesService = {
     return updateResult.data;
   }
  
-  
-  // Update the updateNote method
-  /*async updateNote(id: string, data: Partial<CreateNoteInput>) {
 
-    const result = await client.models.Note.get({ id });
-    if (!result.data) throw new Error('Note not found');
-  
-    let imagePath = result.data.imageKey;
-  
-    if (data.deleteImage) {
-      // If deleteImage is true, remove the image reference
-      imagePath = null;
-    } else if (data.image) {
-      // If there's a new image, upload it
-      const user = await getCurrentUser();
-      imagePath = `notes/${user.userId}-${Date.now()}-${data.image.name}`;
-      await uploadData({
-        path: imagePath,
-        data: data.image,
-        options: {
-          contentType: data.image.type
-        }
-      }).result;
-    }
-  
-    const updateResult = await client.models.Note.update({
-      id,
-      title: data.title,
-      content: data.content,
-      imageKey: imagePath
-    });
-  
-    return updateResult.data;
-  }*/
 }

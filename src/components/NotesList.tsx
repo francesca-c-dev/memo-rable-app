@@ -182,7 +182,8 @@ export default function NotesList() {
                     <Button
                         isIconOnly
                         variant="light"
-                        color={viewMode === 'grid' ? 'primary' : 'default'}
+                        className={`${viewMode === 'grid' ? 'text-primary-500 ' : ' text-gray-400 dark:text-gray-200'}`}
+                     
                         onPress={() => setViewMode('grid')}
                     >
                         <Grid2X2 className="w-5 h-5" />
@@ -190,7 +191,7 @@ export default function NotesList() {
                     <Button
                         isIconOnly
                         variant="light"
-                        color={viewMode === 'list' ? 'primary' : 'default'}
+                        className={`${viewMode === 'list' ? 'text-primary-500 ' : ' text-gray-400 dark:text-gray-200'}`}
                         onPress={() => setViewMode('list')}
                     >
                         <List className="w-5 h-5" />

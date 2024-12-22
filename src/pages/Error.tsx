@@ -14,7 +14,7 @@ export default function ErrorPage() {
         {(error as Error)?.message || 'Unknown error'}
       </p>
       <Button as={Link} to="/" color="primary">
-        Go Home
+        Home
       </Button>
     </div>
   );

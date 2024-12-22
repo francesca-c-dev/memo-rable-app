@@ -30,7 +30,7 @@ backend.statisticsFunction.resources.lambda.addToRolePolicy(
       'dynamodb:Query',
       'dynamodb:Scan'
     ],
-    // Allow access to all tables for now
+    
     resources: ['*']
   })
 );
@@ -58,7 +58,7 @@ const statisticsApi = new RestApi(apiStack, "StatisticsApi", {
     stageName: "dev",
   },
   defaultCorsPreflightOptions:  {
-    allowOrigins: ['*'], // In production, you should specify exact origins
+    allowOrigins: ['*'], 
     allowMethods: ['GET', 'OPTIONS'],
     allowHeaders: ['*'],
     allowCredentials: true
@@ -108,6 +108,6 @@ backend.addOutput({
 
 export const outputs = {
   custom: {
-    API: statisticsApi.url, // Ensure the API's URL is set as an output
+    API: statisticsApi.url, 
   },
 };

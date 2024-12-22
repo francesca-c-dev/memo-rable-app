@@ -14,7 +14,7 @@ export interface Statistics {
 export const getStatistics = async (): Promise<Statistics> => {
     try {
       const { tokens } = await fetchAuthSession();
-      console.log('Auth tokens obtained:', !!tokens);
+     
       
       console.log('Making API request...');
       const operation = await get({

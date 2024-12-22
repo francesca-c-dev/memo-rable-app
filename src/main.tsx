@@ -11,9 +11,8 @@ import { Amplify } from 'aws-amplify';
 
 
 
-//Amplify.configure(outputs);
 
-console.log("full outputs", outputs)
+
 
 Amplify.configure(outputs)
 const existingConfig = Amplify.getConfig();
@@ -32,7 +31,7 @@ Amplify.configure({
 });
 
 
-console.log('Amplify Config after setup:', Amplify.getConfig())
+
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -1,4 +1,4 @@
-// src/components/WelcomeMessage.tsx
+
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 function WelcomeMessage() {
   const { user } = useAuthenticator();
   const { t } = useTranslation();
-  console.log(user)
+
   
-  // Safe way to get username/email
-  const username =  user.signInDetails?.loginId?.split('@')[0] || user?.username ||'';
+  
+  const username =  user?.signInDetails?.loginId?.split('@')[0] || user?.username ||'';
 
   return (
     <motion.div

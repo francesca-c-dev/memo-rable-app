@@ -71,7 +71,7 @@ export default function PDFPreview({ note, isOpen, onClose }: PDFPreviewProps) {
 
           pdf.addImage(base64, 'JPEG', 20, yPosition, imgWidth, imgHeight);
         } catch (error) {
-          console.error('Error loading image:', error);
+       
           pdf.text('(Image could not be loaded)', 20, yPosition);
         }
       }
@@ -79,7 +79,7 @@ export default function PDFPreview({ note, isOpen, onClose }: PDFPreviewProps) {
       // Download the PDF
       pdf.save(`${note.title}.pdf`);
     } catch (error) {
-      console.error('Error generating PDF:', error);
+
     } finally {
       setIsGenerating(false);
       onClose();

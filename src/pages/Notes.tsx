@@ -4,10 +4,12 @@ import NotesList from '../components/NotesList';
 import CreateNote from '../components/CreateNote';
 import NoteStatistics from '../components/NoteStatistics';
 import WelcomeMessage from '../components/WelcomeMessage';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 export default function Notes() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
+  const { authStatus } = useAuthenticator();
+  console.log(authStatus)
 
   return (
     <div className="min-h-screen bg-background">

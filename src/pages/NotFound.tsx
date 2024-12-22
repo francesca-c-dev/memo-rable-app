@@ -10,7 +10,7 @@ export default function NotFound() {
       <h1 className="text-5xl font-bold mb-4">404</h1>
       <p className="text-xl mb-8">Page not found</p>
       <Button as={Link} to="/" color="primary">
-        Go Home
+    Home
       </Button>
     </div>
   );

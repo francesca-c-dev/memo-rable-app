@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { getStatistics } from '../api/statistics';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Statistics {
@@ -20,9 +19,7 @@ export default function NoteStatistics() {
     queryFn: getStatistics
   });
 
-  useEffect(() => {
-    console.log(statistics);
-  }, [statistics]);
+  
 
   if (isLoading) {
     return (

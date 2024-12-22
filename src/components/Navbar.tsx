@@ -1,18 +1,22 @@
-import { useTheme } from "next-themes";
-import { useTranslation } from "react-i18next";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarItem,
-  Button,
-  DropdownItem,
-  DropdownTrigger,
-  Dropdown,
+import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
+import { useAuthenticator } from '@aws-amplify/ui-react';
+import { 
+  Navbar as NextUINavbar, 
+  NavbarContent, 
+  NavbarItem, 
+  Button, 
+  DropdownItem, 
+  DropdownTrigger, 
+  Dropdown, 
   DropdownMenu,
   Switch,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem
 } from "@nextui-org/react";
 import { Sun, Moon, Languages, LogOut, Plus, Check } from "lucide-react";
+import { useState } from 'react';
 
 interface NavbarProps {
   onCreateNote: () => void;
@@ -22,37 +26,47 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { signOut } = useAuthenticator();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const languages = [
-    { code: "en", label: "English" },
-    { code: "it", label: "Italiano" },
+    { code: 'en', label: 'English' },
+    { code: 'it', label: 'Italiano' }
   ];
 
   return (
     <NextUINavbar
       maxWidth="full"
       position="sticky"
-      className="bg-primary-600 dark:bg-primary-600"
+      className="bg-primary-600 dark:bg-primary-800"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
-        <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
+      {/* Always visible content */}
+      <NavbarContent className="sm:hidden" justify="start">
+        <h1 className="text-xl font-bold text-white">{t('notes.title')}</h1>
       </NavbarContent>
 
-      <NavbarContent className="flex gap-4" justify="end">
-        <NavbarItem>
+      <NavbarContent className="hidden sm:flex" justify="start">
+        <h1 className="text-xl font-bold text-white">{t('notes.title')}</h1>
+      </NavbarContent>
+
+
+      {/* Desktop Menu */}
+      <NavbarContent  justify="end">
+      <NavbarItem>
           <Button
             color="primary"
             variant="flat"
             startContent={<Plus size={20} />}
             onPress={onCreateNote}
+            className="bg-white text-primary-600"
           >
-            {t("notes.create")}
+            {t('notes.create')}
           </Button>
         </NavbarItem>
 
-        <NavbarItem>
-          <Dropdown>
+        <NavbarItem className="hidden sm:flex" >
+        <Dropdown>
             <DropdownTrigger>
               <Button
                 isIconOnly
@@ -88,19 +102,19 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
           </Dropdown>
         </NavbarItem>
 
-        <NavbarItem>
+        <NavbarItem className="hidden sm:flex" >
           <Switch
-            defaultSelected={theme === "dark"}
+            defaultSelected={theme === 'dark'}
             size="lg"
-            color="primary"
-            startContent={<Sun className="text-primary-500" />}
-            endContent={<Moon className="text-primary-300" />}
-            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+            color="default"
+            startContent={<Sun className="text-white" />}
+            endContent={<Moon className="text-white" />}
+            onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
           />
         </NavbarItem>
 
-        <NavbarItem>
-          <Button
+        <NavbarItem className="hidden sm:flex" >
+        <Button
             isIconOnly
             className="!text-[#d61c0f] bg-white "
             variant="light"
@@ -109,7 +123,62 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
             <LogOut size={20} />
           </Button>
         </NavbarItem>
+             {/* Mobile Menu Toggle */}
+      <NavbarItem className="sm:hidden" >
+        <NavbarMenuToggle className="!bg-transparent text-white" />
+      </NavbarItem>
+
       </NavbarContent>
+
+ 
+      {/* Mobile Menu */}
+      <NavbarMenu className="bg-primary-600 dark:bg-primary-800 pt-6">
+        <NavbarMenuItem>
+          <div className="flex items-center gap-2 py-2">
+            <Languages size={20} className="text-white" />
+            <div className="flex gap-4">
+              {languages.map((lang) => (
+                <Button
+                  key={lang.code}
+                  variant="light"
+                  className={`text-white ${i18n.language === lang.code ? 'font-bold' : ''}`}
+                  onPress={() => i18n.changeLanguage(lang.code)}
+                >
+                  {lang.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem>
+          <div className="flex items-center gap-2 py-2">
+            {theme === 'dark' ? 
+              <Moon size={20} className="text-white" /> : 
+              <Sun size={20} className="text-white" />
+            }
+            <Switch
+              defaultSelected={theme === 'dark'}
+              size="lg"
+              color="default"
+              onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
+            />
+          </div>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem>
+        <Button
+            isIconOnly
+            variant="light"
+            onPress={signOut}
+            startContent={<div className="flex gap-2 p-2"><LogOut size={20} /> <p>{t('auth.signOut')}</p> </div>}
+            className="!text-[#d61c0f] bg-white min-w-[25%] justify-start"
+        
+          >
+            
+          </Button>
+        </NavbarMenuItem>
+      </NavbarMenu>
     </NextUINavbar>
   );
 }
