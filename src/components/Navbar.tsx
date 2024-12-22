@@ -50,12 +50,11 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex" justify="start">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
-        <p className="text-white font-bold font-logo text-3xl">{"MEMOrable"}</p>
-      </NavbarContent>
-      </NavbarContent>
-
+  <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+    <img src="/logo.svg" alt="Logo" className="h-8 w-auto mr-3" />
+    <p className="text-white font-bold font-logo text-xl">{"MEMOrable"}</p>
+  </NavbarContent>
+</NavbarContent>
 
       {/* Desktop Menu */}
       <NavbarContent  justify="end">
@@ -178,7 +177,7 @@ export default function Navbar({ onCreateNote }: NavbarProps) {
             variant="light"
             onPress={signOut}
             startContent={<div className="flex gap-2 p-2"><LogOut size={20} /> <p>{t('auth.signOut')}</p> </div>}
-            className="!text-[#d61c0f] bg-white min-w-[25%] justify-start"
+            className="!text-[#d61c0f] bg-white min-w-32 justify-start"
         
           >
             
